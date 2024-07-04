@@ -3,11 +3,17 @@ package com.syrous.hackernews
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.cachedIn
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import com.syrous.hackernews.paging.PostPagingSource
 import com.syrous.hackernews.remote.ApiService
 import com.syrous.hackernews.remote.model.CommentDetail
 import com.syrous.hackernews.remote.model.StoryDetail
+import com.syrous.hackernews.usecases.RetrievePostAsPagesUseCaseImpl
+import com.syrous.hackernews.usecases.model.RetrievePostAsPageUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,6 +26,11 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 
 class MainViewModel : ViewModel(), MainModel, PostManager {
 
+    init {
+        provideMoshi()
+        provideRetrofit()
+    }
+
     //private variables
     private lateinit var apiClient: ApiService
     private lateinit var moshi: Moshi
@@ -27,16 +38,17 @@ class MainViewModel : ViewModel(), MainModel, PostManager {
     // public variables
     override val postList: MutableStateFlow<List<StoryDetail>> = MutableStateFlow(listOf())
     override val commentList: MutableStateFlow<List<CommentDetail>> = MutableStateFlow(listOf())
-
-    init {
-        provideMoshi()
-        provideRetrofit()
-    }
+    private val retrieveUseCase: RetrievePostAsPageUseCase =
+        RetrievePostAsPagesUseCaseImpl(apiClient)
+    val post = Pager(
+        config = PagingConfig(10, enablePlaceholders = true),
+        pagingSourceFactory = { PostPagingSource(retrieveUseCase) }
+    ).flow.cachedIn(viewModelScope)
 
     private fun provideRetrofit() {
         apiClient = Retrofit.Builder().client(OkHttpClient.Builder().also {
             val logger = HttpLoggingInterceptor()
-            logger.level = HttpLoggingInterceptor.Level.BASIC
+            logger.level = HttpLoggingInterceptor.Level.BODY
             it.addInterceptor(logger)
         }.build())
             .addConverterFactory(MoshiConverterFactory.create(moshi).asLenient())

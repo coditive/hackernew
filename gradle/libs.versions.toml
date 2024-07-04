@@ -11,6 +11,9 @@ composeBom = "2024.06.00"
 retrofit = "2.11.0"
 moshi = "1.15.1"
 coroutine = "1.9.0-RC"
+paging = "3.3.0"
+paging-compose = "3.3.0"
+pagingCommonAndroid = "3.3.0"
 
 
 [libraries]
@@ -35,8 +38,9 @@ moshi = {group = "com.squareup.moshi", name = "moshi-kotlin", version.ref = "mos
 moshi-codegen = {group = "com.squareup.moshi", name = "moshi-kotlin-codegen", version.ref = "moshi"}
 coroutine-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref  = "coroutine"}
 coroutine-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref  = "coroutine"}
-
-
+paging3 = { group = "androidx.paging", name = "paging-runtime", version.ref = "paging"}
+paging3-compose = { group = "androidx.paging", name = "paging-compose", version.ref = "paging-compose"}
+androidx-paging-common-android = { group = "androidx.paging", name = "paging-common", version.ref = "pagingCommonAndroid" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
