@@ -12,6 +12,7 @@ import com.syrous.hackernews.paging.PostPagingSource
 import com.syrous.hackernews.remote.ApiService
 import com.syrous.hackernews.remote.model.CommentDetail
 import com.syrous.hackernews.remote.model.StoryDetail
+import com.syrous.hackernews.usecases.PAGE_SIZE
 import com.syrous.hackernews.usecases.RetrievePostAsPagesUseCaseImpl
 import com.syrous.hackernews.usecases.model.RetrievePostAsPageUseCase
 import kotlinx.coroutines.Dispatchers
@@ -38,28 +39,27 @@ class MainViewModel : ViewModel(), MainModel, PostManager {
     // public variables
     override val postList: MutableStateFlow<List<StoryDetail>> = MutableStateFlow(listOf())
     override val commentList: MutableStateFlow<List<CommentDetail>> = MutableStateFlow(listOf())
+
     private val retrieveUseCase: RetrievePostAsPageUseCase =
         RetrievePostAsPagesUseCaseImpl(apiClient)
-    val post = Pager(
-        config = PagingConfig(10, enablePlaceholders = true),
-        pagingSourceFactory = { PostPagingSource(retrieveUseCase) }
-    ).flow.cachedIn(viewModelScope)
+
+    val post = Pager(config = PagingConfig(
+        PAGE_SIZE,
+        enablePlaceholders = false,
+        initialLoadSize = PAGE_SIZE // Initially load 3 pages of PAGE_SIZE bcz of multiplier in library
+    ), pagingSourceFactory = { PostPagingSource(retrieveUseCase) }).flow.cachedIn(viewModelScope)
 
     private fun provideRetrofit() {
         apiClient = Retrofit.Builder().client(OkHttpClient.Builder().also {
             val logger = HttpLoggingInterceptor()
             logger.level = HttpLoggingInterceptor.Level.BODY
             it.addInterceptor(logger)
-        }.build())
-            .addConverterFactory(MoshiConverterFactory.create(moshi).asLenient())
-            .baseUrl("https://hacker-news.firebaseio.com/").build()
-            .create(ApiService::class.java)
+        }.build()).addConverterFactory(MoshiConverterFactory.create(moshi).asLenient())
+            .baseUrl("https://hacker-news.firebaseio.com/").build().create(ApiService::class.java)
     }
 
     private fun provideMoshi() {
-        moshi = Moshi.Builder()
-            .addLast(KotlinJsonAdapterFactory())
-            .build()
+        moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
     }
 
     override fun getAskStoriesPost() {

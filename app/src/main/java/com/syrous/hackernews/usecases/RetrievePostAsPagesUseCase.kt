@@ -12,14 +12,12 @@ import kotlinx.coroutines.withContext
 
 
 // 1 page = 20 list items
-
+const val PAGE_SIZE = 20
 class RetrievePostAsPagesUseCaseImpl(private val apiService: ApiService) :
     RetrievePostAsPageUseCase {
 
     override suspend fun retrievePage(page: Int): List<StoryDetail> {
-        Log.d("RetrievePostAsPagesUseCaseImpl", "api called!!!!!")
-        val itemIdList = apiService.getAskHNItemList().drop(20 * page - 1).take(20)
-        Log.d("RetrievePostAsPagesUseCaseImpl", "retrievePage: $itemIdList")
+        val itemIdList = apiService.getAskHNItemList().drop(PAGE_SIZE * page - 1).take(PAGE_SIZE)
         return itemIdList.map { id ->
             apiService.getStoryFromItemId(id)
         }

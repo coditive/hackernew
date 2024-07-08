@@ -10,11 +10,17 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.paging.LoadState
@@ -39,14 +45,32 @@ class MainActivity : ComponentActivity() {
                             .fillMaxSize()
                     ) {
                         val postList = viewModel.post.collectAsLazyPagingItems()
-                        LazyColumn {
+                        val listState = rememberLazyListState()
+                        val shouldLoadMore by remember {
+                            derivedStateOf {
+                                val lastVisibleItemIndex =
+                                    listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index
+                                val totalItemCount = listState.layoutInfo.totalItemsCount
+                                // Adjust the threshold value as needed
+                                val threshold = 5
+                                Log.d("MainActivity", "lastIndex -> $lastVisibleItemIndex, totalItemCount -> $totalItemCount")
+                                lastVisibleItemIndex != null && lastVisibleItemIndex >= totalItemCount - threshold
+                            }
+                        }
+                        LazyColumn(state = listState) {
                             items(
                                 count = postList.itemCount,
                                 key = postList.itemKey { it.id },
                                 contentType = postList.itemContentType { it }
                             ) {
-                                Log.d("MainActivity", "items -> ${postList[it]}")
                                 Text(text = postList[it]?.title ?: "")
+                            }
+                        }
+
+                        LaunchedEffect(key1 = shouldLoadMore) {
+                            Log.d("MainActivity", "in launch effect shouldLoadMore -> $shouldLoadMore")
+                            if (shouldLoadMore && postList.loadState.append is LoadState.NotLoading) {
+                                postList.retry()
                             }
                         }
                     }

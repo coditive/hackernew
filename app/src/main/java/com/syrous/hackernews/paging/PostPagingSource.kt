@@ -21,16 +21,16 @@ class PostPagingSource(private val useCase: RetrievePostAsPageUseCase) :
 
     override suspend fun load(params: LoadParams<Long>): LoadResult<Long, StoryDetail> {
         return try {
-            withContext(Dispatchers.IO) {
-                val page = params.key ?: 1
-                Log.d("PostPagingSource", "load: $page, calling storyDetailList from useCase")
-                val storyDetailList = async { useCase.retrievePage(page.toInt()) }.await()
-                LoadResult.Page(
-                    data = storyDetailList,
-                    prevKey = if (page.toInt() == 1) null else page - 1,
-                    nextKey = if (storyDetailList.isEmpty()) null else page + 1
-                )
-            }
+            val page = params.key ?: 1
+            val pageSize = params.loadSize
+            Log.d("PostPagingSource", "load: $page, pageSize: $pageSize")
+            val storyDetailList =  useCase.retrievePage(page.toInt())
+            LoadResult.Page(
+                data = storyDetailList,
+                prevKey = if (page.toInt() == 1) null else page - 1,
+                nextKey = if (storyDetailList.size < pageSize) null else page + 1
+            )
+
         } catch (e: Exception) {
             LoadResult.Error(e)
         }
