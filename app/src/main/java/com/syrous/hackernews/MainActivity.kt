@@ -31,7 +31,7 @@ import com.syrous.hackernews.ui.theme.HackernewsReaderTheme
 
 class MainActivity : ComponentActivity() {
 
-    private val viewModel by viewModels<MainViewModel>()
+    private val viewModel by viewModels<MainViewModel> { MainViewModel.Factory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,17 +53,24 @@ class MainActivity : ComponentActivity() {
                                 val totalItemCount = listState.layoutInfo.totalItemsCount
                                 // Adjust the threshold value as needed
                                 val threshold = 5
-                                Log.d("MainActivity", "lastIndex -> $lastVisibleItemIndex, totalItemCount -> $totalItemCount")
                                 lastVisibleItemIndex != null && lastVisibleItemIndex >= totalItemCount - threshold
                             }
                         }
-                        LazyColumn(state = listState) {
-                            items(
-                                count = postList.itemCount,
-                                key = postList.itemKey { it.id },
-                                contentType = postList.itemContentType { it }
-                            ) {
-                                Text(text = postList[it]?.title ?: "")
+                        when(postList.loadState.refresh) {
+                            is LoadState.Error -> Log.e("MainActivity", "List Loading Error")
+                            LoadState.Loading -> {
+                                Log.d("MainActivity", "List is Loading")
+                            }
+                            is LoadState.NotLoading -> {
+                                Log.d("MainActivity", "List is Loaded postList -> ${postList.itemSnapshotList}")
+                                LazyColumn(state = listState) {
+                                    items(
+                                        count = postList.itemCount,
+                                        key = postList.itemKey(),
+                                    ) {
+                                        Text(text = postList[it]?.title ?: "")
+                                    }
+                                }
                             }
                         }
 

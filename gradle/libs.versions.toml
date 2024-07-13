@@ -1,11 +1,11 @@
 [versions]
 agp = "8.5.0"
-kotlin = "1.9.24"
+kotlin = "2.0.0"
 coreKtx = "1.13.1"
 junit = "4.13.2"
-junitVersion = "1.1.5"
-espressoCore = "3.5.1"
-lifecycleRuntimeKtx = "2.8.2"
+junitVersion = "1.2.1"
+espressoCore = "3.6.1"
+lifecycleRuntimeKtx = "2.8.3"
 activityCompose = "1.9.0"
 composeBom = "2024.06.00"
 retrofit = "2.11.0"
@@ -14,6 +14,8 @@ coroutine = "1.9.0-RC"
 paging = "3.3.0"
 paging-compose = "3.3.0"
 pagingCommonAndroid = "3.3.0"
+room = "2.6.1"
+ksp = "2.0.0-1.0.21"
 
 
 [libraries]
@@ -41,8 +43,13 @@ coroutine-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-c
 paging3 = { group = "androidx.paging", name = "paging-runtime", version.ref = "paging"}
 paging3-compose = { group = "androidx.paging", name = "paging-compose", version.ref = "paging-compose"}
 androidx-paging-common-android = { group = "androidx.paging", name = "paging-common", version.ref = "pagingCommonAndroid" }
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room"}
+room-compiler = {group = "androidx.room", name = "room-compiler", version.ref = "room"}
+room-kotlin = {group = "androidx.room", name = "room-ktx", version.ref = "room"}
+room-paging = {group = "androidx.room", name = "room-paging", version.ref = "room"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }

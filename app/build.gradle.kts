@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -39,15 +41,19 @@ android {
     buildFeatures {
         compose = true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.14"
-    }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
 }
+
+composeCompiler {
+    enableStrongSkippingMode = true
+
+    reportsDestination = layout.buildDirectory.dir("compose_compiler")
+}
+
 
 dependencies {
 
@@ -59,6 +65,8 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+
+    //Networking
     implementation(libs.retrofit)
     implementation(libs.moshi)
     implementation(libs.moshi.converter)
@@ -66,9 +74,18 @@ dependencies {
     implementation(libs.coroutine.core)
     implementation(libs.coroutine.android)
     implementation(libs.http.logger)
+
+    //Paging
     implementation(libs.paging3)
     implementation(libs.paging3.compose)
     implementation(libs.androidx.paging.common.android)
+
+    //Room
+    implementation(libs.room.runtime)
+    ksp(libs.room.compiler)
+    implementation(libs.room.kotlin)
+    implementation(libs.room.paging)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
