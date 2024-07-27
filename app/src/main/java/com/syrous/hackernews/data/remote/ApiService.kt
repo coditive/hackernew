@@ -1,7 +1,7 @@
-package com.syrous.hackernews.remote
+package com.syrous.hackernews.data.remote
 
-import com.syrous.hackernews.remote.model.CommentDetail
-import com.syrous.hackernews.remote.model.StoryDetail
+import com.syrous.hackernews.data.remote.model.CommentDetail
+import com.syrous.hackernews.data.remote.model.StoryDetail
 import retrofit2.http.GET
 import retrofit2.http.Path
 

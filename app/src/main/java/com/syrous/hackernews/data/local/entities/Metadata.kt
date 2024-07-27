@@ -1,4 +1,4 @@
-package com.syrous.hackernews.local.entities
+package com.syrous.hackernews.data.local.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

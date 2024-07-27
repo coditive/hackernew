@@ -1,6 +1,6 @@
-package com.syrous.hackernews.remote.model
+package com.syrous.hackernews.data.remote.model
 
-import com.syrous.hackernews.local.entities.Post
+import com.syrous.hackernews.data.local.entities.Post
 
 data class StoryDetail(
     val by: String?,

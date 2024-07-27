@@ -1,4 +1,4 @@
-package com.syrous.hackernews.local.dao
+package com.syrous.hackernews.data.local.dao
 
 import androidx.room.Delete
 import androidx.room.Insert

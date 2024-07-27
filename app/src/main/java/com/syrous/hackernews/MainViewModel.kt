@@ -1,10 +1,8 @@
 package com.syrous.hackernews
 
 import android.app.Application
-import android.content.Context
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
@@ -17,26 +15,25 @@ import androidx.paging.cachedIn
 import androidx.room.Room
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import com.syrous.hackernews.local.HackerNewDB
-import com.syrous.hackernews.paging.PagingConfig.PAGE_SIZE
-import com.syrous.hackernews.paging.PostPagingSource
-import com.syrous.hackernews.paging.StoryRemoteMediator
-import com.syrous.hackernews.remote.ApiService
-import com.syrous.hackernews.remote.model.CommentDetail
-import com.syrous.hackernews.remote.model.StoryDetail
-import com.syrous.hackernews.usecases.RetrievePostAsPagesUseCaseImpl
-import com.syrous.hackernews.usecases.model.RetrievePostAsPageUseCase
+import com.syrous.hackernews.data.local.HackerNewDB
+import com.syrous.hackernews.domain.paging.PagingConfig.PAGE_SIZE
+import com.syrous.hackernews.domain.paging.PostPagingSource
+import com.syrous.hackernews.domain.paging.StoryRemoteMediator
+import com.syrous.hackernews.data.remote.ApiService
+import com.syrous.hackernews.data.remote.model.CommentDetail
+import com.syrous.hackernews.data.remote.model.StoryDetail
+import com.syrous.hackernews.domain.usecases.RetrievePostAsPagesUseCaseImpl
+import com.syrous.hackernews.domain.usecases.model.RetrievePostAsPageUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
-class MainViewModel(private val application: Application) : AndroidViewModel(application),
+class MainViewModel(application: Application) : AndroidViewModel(application),
     MainModel, PostManager {
 
     init {
@@ -115,5 +112,4 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
             }
         }
     }
-
 }

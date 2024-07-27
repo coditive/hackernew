@@ -1,7 +1,7 @@
 package com.syrous.hackernews
 
-import com.syrous.hackernews.remote.model.CommentDetail
-import com.syrous.hackernews.remote.model.StoryDetail
+import com.syrous.hackernews.data.remote.model.CommentDetail
+import com.syrous.hackernews.data.remote.model.StoryDetail
 import kotlinx.coroutines.flow.StateFlow
 
 interface PostManager {

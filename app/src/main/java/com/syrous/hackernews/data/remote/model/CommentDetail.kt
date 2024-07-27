@@ -1,4 +1,4 @@
-package com.syrous.hackernews.remote.model
+package com.syrous.hackernews.data.remote.model
 
 data class CommentDetail (
     val by: String,

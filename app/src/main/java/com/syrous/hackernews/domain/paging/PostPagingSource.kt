@@ -1,14 +1,10 @@
-package com.syrous.hackernews.paging
+package com.syrous.hackernews.domain.paging
 
-import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.syrous.hackernews.local.dao.PostDao
-import com.syrous.hackernews.local.entities.Post
-import com.syrous.hackernews.remote.model.StoryDetail
-import com.syrous.hackernews.usecases.model.RetrievePostAsPageUseCase
+import com.syrous.hackernews.data.local.dao.PostDao
+import com.syrous.hackernews.data.local.entities.Post
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 
 class PostPagingSource(private val postDao: PostDao) : PagingSource<Long, Post>() {

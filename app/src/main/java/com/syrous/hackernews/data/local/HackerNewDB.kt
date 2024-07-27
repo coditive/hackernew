@@ -1,4 +1,4 @@
-package com.syrous.hackernews.local
+package com.syrous.hackernews.data.local
 
 import androidx.room.Database
 import androidx.room.DatabaseConfiguration
@@ -6,11 +6,11 @@ import androidx.room.InvalidationTracker
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteOpenHelper
-import com.syrous.hackernews.local.dao.MetaDataDao
-import com.syrous.hackernews.local.dao.PostDao
-import com.syrous.hackernews.local.entities.Comment
-import com.syrous.hackernews.local.entities.Metadata
-import com.syrous.hackernews.local.entities.Post
+import com.syrous.hackernews.data.local.dao.MetaDataDao
+import com.syrous.hackernews.data.local.dao.PostDao
+import com.syrous.hackernews.data.local.entities.Comment
+import com.syrous.hackernews.data.local.entities.Metadata
+import com.syrous.hackernews.data.local.entities.Post
 
 
 @Database(entities = [Post::class, Metadata::class, Comment::class], version = 1)

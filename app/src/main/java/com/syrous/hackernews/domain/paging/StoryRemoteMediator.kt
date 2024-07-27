@@ -1,25 +1,21 @@
-package com.syrous.hackernews.paging
+package com.syrous.hackernews.domain.paging
 
+import android.util.Log
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
-import androidx.room.Database
-import com.syrous.hackernews.local.HackerNewDB
-import com.syrous.hackernews.local.dao.PostDao
-import com.syrous.hackernews.local.entities.Post
-import com.syrous.hackernews.remote.model.StoryDetail
-import com.syrous.hackernews.remote.model.StoryType
-import com.syrous.hackernews.usecases.model.RetrievePostAsPageUseCase
+import com.syrous.hackernews.data.local.HackerNewDB
+import com.syrous.hackernews.data.local.entities.Post
+import com.syrous.hackernews.data.remote.model.StoryType
+import com.syrous.hackernews.domain.usecases.model.RetrievePostAsPageUseCase
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 
 @OptIn(ExperimentalPagingApi::class)
 class StoryRemoteMediator(
-    private val db: HackerNewDB,
-    private val useCase: RetrievePostAsPageUseCase
+    private val db: HackerNewDB, private val useCase: RetrievePostAsPageUseCase
 ) : RemoteMediator<Long, Post>() {
 
     override suspend fun initialize(): InitializeAction = withContext(Dispatchers.IO) {
@@ -33,14 +29,13 @@ class StoryRemoteMediator(
     }
 
     override suspend fun load(
-        loadType: LoadType,
-        state: PagingState<Long, Post>
+        loadType: LoadType, state: PagingState<Long, Post>
     ): MediatorResult {
         return try {
+            Log.d("StoryRemoteMediator", "loadType: $loadType")
             val loadKey = when (loadType) {
                 LoadType.REFRESH -> null
-                LoadType.PREPEND ->
-                    return MediatorResult.Success(endOfPaginationReached = true)
+                LoadType.PREPEND -> null
 
                 LoadType.APPEND -> {
                     val lastItem = state.lastItemOrNull()

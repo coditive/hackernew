@@ -21,12 +21,15 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
+import com.syrous.hackernews.domain.paging.RemotePresentationState
+import com.syrous.hackernews.domain.paging.asRemotePresentationState
 import com.syrous.hackernews.ui.theme.HackernewsReaderTheme
 
 class MainActivity : ComponentActivity() {
@@ -45,6 +48,7 @@ class MainActivity : ComponentActivity() {
                             .fillMaxSize()
                     ) {
                         val postList = viewModel.post.collectAsLazyPagingItems()
+                        val pagerState = postList.loadState.asRemotePresentationState()
                         val listState = rememberLazyListState()
                         val shouldLoadMore by remember {
                             derivedStateOf {
@@ -56,28 +60,35 @@ class MainActivity : ComponentActivity() {
                                 lastVisibleItemIndex != null && lastVisibleItemIndex >= totalItemCount - threshold
                             }
                         }
-                        when(postList.loadState.refresh) {
-                            is LoadState.Error -> Log.e("MainActivity", "List Loading Error")
-                            LoadState.Loading -> {
-                                Log.d("MainActivity", "List is Loading")
-                            }
-                            is LoadState.NotLoading -> {
-                                Log.d("MainActivity", "List is Loaded postList -> ${postList.itemSnapshotList}")
-                                LazyColumn(state = listState) {
+                        LazyColumn(modifier = Modifier.fillMaxSize(), state = listState) {
+                            when (pagerState) {
+                                RemotePresentationState.INITIAL,
+                                RemotePresentationState.REMOTE_LOADING,
+                                RemotePresentationState.SOURCE_LOADING -> {
+                                    item {
+                                        Box(modifier = Modifier.fillParentMaxSize()) {
+                                            CircularProgressIndicator(
+                                                modifier = Modifier.align(
+                                                    Alignment.Center
+                                                )
+                                            )
+                                        }
+                                    }
+                                }
+
+                                RemotePresentationState.PRESENTED -> {
+                                    if(postList.itemCount == 0){
+                                        postList.refresh()
+                                    }
+
                                     items(
                                         count = postList.itemCount,
                                         key = postList.itemKey(),
+                                        contentType = postList.itemContentType()
                                     ) {
-                                        Text(text = postList[it]?.title ?: "")
+                                        Text(text = "${postList[it]}")
                                     }
                                 }
-                            }
-                        }
-
-                        LaunchedEffect(key1 = shouldLoadMore) {
-                            Log.d("MainActivity", "in launch effect shouldLoadMore -> $shouldLoadMore")
-                            if (shouldLoadMore && postList.loadState.append is LoadState.NotLoading) {
-                                postList.retry()
                             }
                         }
                     }

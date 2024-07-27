@@ -1,4 +1,4 @@
-package com.syrous.hackernews.paging
+package com.syrous.hackernews.domain.paging
 
 object PagingConfig {
 

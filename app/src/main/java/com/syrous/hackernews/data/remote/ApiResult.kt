@@ -1,4 +1,4 @@
-package com.syrous.hackernews.remote
+package com.syrous.hackernews.data.remote
 
 sealed class ApiResult<out T>(val response: T?, val success: Boolean, val message: String = "") {
     data class Success<out T>(val res: T) : ApiResult<T>(res, true)

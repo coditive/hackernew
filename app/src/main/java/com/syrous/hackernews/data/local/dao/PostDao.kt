@@ -1,10 +1,10 @@
-package com.syrous.hackernews.local.dao
+package com.syrous.hackernews.data.local.dao
 
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
-import com.syrous.hackernews.local.entities.Metadata
-import com.syrous.hackernews.local.entities.Post
+import com.syrous.hackernews.data.local.entities.Metadata
+import com.syrous.hackernews.data.local.entities.Post
 
 
 @Dao
